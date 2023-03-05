@@ -1,0 +1,1 @@
+# systemy-wspomagania-decyzji
