@@ -1,0 +1,5 @@
+plotly<6.0.0
+PyQt6
+dash
+PySimpleGUI<5.0.0
+numpy
