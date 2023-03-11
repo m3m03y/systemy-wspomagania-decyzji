@@ -1,5 +1,5 @@
 import app.tools.core as core
-
+import numpy as np
 import unittest
 
 class Test_TestCoreMethods(unittest.TestCase):
@@ -23,6 +23,11 @@ class Test_TestCoreMethods(unittest.TestCase):
       word_list=["ccc", "aaa", "bbb"]
       numeric_list = core.convert_text_to_numeric_by_alphabet_order(word_list)
       self.assertEqual(numeric_list, [3,1,2]) 
+
+   def test_discretization_should_return_three_divisions(self):
+      num_list=[10, 30, 20, 15, 37, 40]
+      discretized_list = core.discretisation(num_list, 3)
+      self.assertSequenceEqual(tuple(discretized_list), tuple([0, 2, 1, 0, 2, 2]))
 
 if __name__ == '__main__':
       unittest.main()

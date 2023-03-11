@@ -1,6 +1,5 @@
 import typing as t
-
-from numpy import copy
+import numpy as np
 
 def convert_text_to_numeric_by_presence(word_list: t.List[str]):
     convert_map = {}
@@ -14,7 +13,7 @@ def convert_text_to_numeric_by_presence(word_list: t.List[str]):
     return numeric_list
 
 def convert_text_to_numeric_by_alphabet_order(word_list: t.List[str]):
-    alph_word_list = copy(word_list)
+    alph_word_list = np.copy(word_list)
     alph_word_list.sort()
     convert_map = create_map(alph_word_list)
     numeric_list = []
@@ -30,3 +29,15 @@ def create_map(word_list: t.List[str]):
             convert_map[word] = index
             index+=1
     return convert_map
+
+def discretisation(values: t.List[str], divisions: int = 3):
+    min_val = min(values)
+    max_val = max(values)
+    length = (max_val - min_val)/divisions
+    bins = []
+    for i in range(1, divisions):
+        bins.append(min_val + i * length)
+    return np.digitize(values,bins)
+    
+def standardization(values: t.List[str]):
+    ...
