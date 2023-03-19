@@ -1,5 +1,9 @@
 plotly<6.0.0
-PyQt6
+pyqt6
 dash
 PySimpleGUI<5.0.0
 numpy
+pandas
+openpyxl 
+xlsxwriter 
+xlrd

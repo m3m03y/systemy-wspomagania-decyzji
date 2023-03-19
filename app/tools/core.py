@@ -1,6 +1,26 @@
 import typing as t
 import numpy as np
+import pandas as pd
+import os
 
+def read_file(path: str) -> pd.DataFrame:
+    filename, file_extension = os.path.splitext(path)
+    if file_extension == ".csv":
+        df = pd.read_csv(path, sep=",", comment="#")
+    elif file_extension == ".xls" or file_extension == ".xlsx":
+        df = pd.read_excel(path)
+    else: 
+        raise FileNotFoundError('Invalid file extension')
+    return df
+    
+def save_file(path: str, df: pd.DataFrame):
+    filename, file_extension = os.path.splitext(path)
+    if file_extension in (".csv", ".txt"):
+        df.to_csv(path, sep=",", comment="#")
+    elif file_extension in (".xls", ".xlsx"):
+        df.to_excel(path)
+    else:
+        raise FileNotFoundError('Invalid file extension') 
 
 def convert_text_to_numeric_by_presence(word_list: t.List[str]):
     convert_map = {}

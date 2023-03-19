@@ -2,8 +2,8 @@ import pandas as pd
 import PySimpleGUI as sg
 import numpy as np
 import os
+import tools.core as core
 from table import create_table
-
 working_directory = os.getcwd()
 
 layout = [
@@ -21,7 +21,10 @@ while True:
         break
     elif event == "Submit":
         excel_file_path = values["-FILE_PATH-"]
-        excel_file_df = pd.read_csv(excel_file_path, sep=",", comment="#")
+        try:
+            excel_file_df = core.read_file(excel_file_path)
+        except:
+            print("File read error") 
         headers = excel_file_df.columns.to_numpy()
         data_array = excel_file_df.to_numpy()
         # ndarray
