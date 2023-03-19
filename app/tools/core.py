@@ -5,9 +5,10 @@ import os
 
 def read_file(path: str) -> pd.DataFrame:
     filename, file_extension = os.path.splitext(path)
-    if file_extension == ".csv":
+    print(f'Get filename: {filename} and extension: {file_extension}')
+    if file_extension in (".csv", ".txt"):
         df = pd.read_csv(path, sep=",", comment="#")
-    elif file_extension == ".xls" or file_extension == ".xlsx":
+    elif file_extension in (".xls", ".xlsx"):
         df = pd.read_excel(path)
     else: 
         raise FileNotFoundError('Invalid file extension')
@@ -15,8 +16,9 @@ def read_file(path: str) -> pd.DataFrame:
     
 def save_file(path: str, df: pd.DataFrame):
     filename, file_extension = os.path.splitext(path)
+    print(f'Get filename: {filename} and extension: {file_extension}')
     if file_extension in (".csv", ".txt"):
-        df.to_csv(path, sep=",", comment="#")
+        df.to_csv(path)
     elif file_extension in (".xls", ".xlsx"):
         df.to_excel(path)
     else:
