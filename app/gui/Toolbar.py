@@ -97,10 +97,34 @@ class Toolbar(QToolBar):
         self.column_to_numerize.emit(column, is_by_alph_chosen)
 
     def discretize_button_clicked(self):
-        ...
+        if self.headers == None:
+            QMessageBox.critical(
+                self,
+                "No data selected!",
+                "Dataset must be load from file first.",
+                buttons=QMessageBox.StandardButton.Discard,
+                defaultButton=QMessageBox.StandardButton.Discard,
+            )
+            return
 
     def standarize_button_clicked(self):
-        ...
+        if self.headers == None:
+            QMessageBox.critical(
+                self,
+                "No data selected!",
+                "Dataset must be load from file first.",
+                buttons=QMessageBox.StandardButton.Discard,
+                defaultButton=QMessageBox.StandardButton.Discard,
+            )
+            return
 
     def change_range_button_clicked(self):
-        ...
+        if self.headers == None:
+            QMessageBox.critical(
+                self,
+                "No data selected!",
+                "Dataset must be load from file first.",
+                buttons=QMessageBox.StandardButton.Discard,
+                defaultButton=QMessageBox.StandardButton.Discard,
+            )
+            return
