@@ -14,11 +14,11 @@ class MainWindow(QMainWindow):
         self.setGeometry(100,100,1280,720)
 
         # add toolbar and status bar
-        toolbar = Toolbar("Toolbar")
-        self.addToolBar(toolbar)
+        self.toolbar = Toolbar("Toolbar")
+        self.addToolBar(self.toolbar)
         self.setStatusBar(QStatusBar(self))
-        toolbar.file_open.connect(self.file_open)
-        toolbar.file_save.connect(self.file_save)
+        self.toolbar.file_open.connect(self.file_open)
+        self.toolbar.file_save.connect(self.file_save)
 
         # create table
         self.table = QTableView()
@@ -30,6 +30,7 @@ class MainWindow(QMainWindow):
         try:
             df = read_file(path)
             self.update_table(df)
+            self.toolbar.update_headers(df.columns.to_list())
         except:
             QMessageBox.critical(
             self,
