@@ -1,5 +1,4 @@
-from requests import head
-from PyQt6.QtWidgets import QToolBar, QFileDialog
+from PyQt6.QtWidgets import QToolBar, QFileDialog, QMessageBox
 from PyQt6.QtGui import QAction
 from PyQt6.QtCore import pyqtSignal as Signal
 from gui.TextToNumberDialog import TextToNumberDialog
@@ -7,6 +6,7 @@ from gui.TextToNumberDialog import TextToNumberDialog
 class Toolbar(QToolBar):
     file_open = Signal(str)
     file_save = Signal(str)
+    column_to_numerize = Signal(str, bool)
 
     def __init__(self, name) -> None:
         super(Toolbar, self).__init__()
@@ -55,7 +55,10 @@ class Toolbar(QToolBar):
             "./",
             "All Files (*);; CSV files (*.csv);; Text files (*.txt);; Excel files (*.xls, *.xlsx)",)
         path = file_input[0]
-        print(f"Open: {path} file from input: {file_input}")
+        if path == "" or path == None:
+            print(f'Toolbar:: No file selected')
+            return 
+        print(f"Toolbar:: Open: {path} file from input: {file_input}")
         self.file_open.emit(path)
 
     def save_file_button_clicked(self):
@@ -65,16 +68,33 @@ class Toolbar(QToolBar):
             "./",
             "CSV files (*.csv);; Text files (*.txt);; Excel files (*.xls, *.xlsx)",)
         path = file_input[0]
-        print(f"Get file path: {path} from input: {file_input}")
+        if path == "" or path == None:
+            print(f'Toolbar:: No file selected')
+            return 
+        print(f"Toolbar:: Get file path: {path} from input: {file_input}")
         self.file_save.emit(path)
 
     def update_headers(self, headers):
-        print(f'Update headers {headers}')
+        print(f'Toolbar:: Update headers {headers}')
         self.headers = headers
 
     def text_to_numeric_button_clicked(self):
+        if self.headers == None:
+            QMessageBox.critical(
+                self,
+                "No data selected!",
+                "Dataset must be load from file first.",
+                buttons=QMessageBox.StandardButton.Discard,
+                defaultButton=QMessageBox.StandardButton.Discard,
+            )
+            return
         dlg = TextToNumberDialog(self.headers)
+        dlg.column_chosen.connect(self.column_to_numerize_chosen)
         dlg.exec()
+
+    def column_to_numerize_chosen(self, column: str, is_by_alph_chosen: bool):
+        print(f'Toolbar:: Column to numerize: {column}, is alphabetically order chosen: {is_by_alph_chosen}')
+        self.column_to_numerize.emit(column, is_by_alph_chosen)
 
     def discretize_button_clicked(self):
         ...

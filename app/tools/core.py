@@ -5,7 +5,7 @@ import os
 
 def read_file(path: str) -> pd.DataFrame:
     filename, file_extension = os.path.splitext(path)
-    print(f'Get filename: {filename} and extension: {file_extension}')
+    print(f'Core:: Get filename: {filename} and extension: {file_extension}')
     if file_extension in (".csv", ".txt"):
         df = pd.read_csv(path, sep=",", comment="#")
     elif file_extension in (".xls", ".xlsx"):
@@ -16,7 +16,7 @@ def read_file(path: str) -> pd.DataFrame:
     
 def save_file(path: str, df: pd.DataFrame):
     filename, file_extension = os.path.splitext(path)
-    print(f'Get filename: {filename} and extension: {file_extension}')
+    print(f'Core:: Get filename: {filename} and extension: {file_extension}')
     if file_extension in (".csv", ".txt"):
         df.to_csv(path)
     elif file_extension in (".xls", ".xlsx"):
@@ -28,11 +28,17 @@ def convert_text_to_numeric_by_presence(word_list: t.List[str]):
     convert_map = {}
     current_class = 1
     numeric_list = []
+    numbers = 0
     for value in word_list:
+        if type(value) == int or type(value) == float:
+            numbers += 1
         if value not in convert_map:
             convert_map[value] = current_class
             current_class += 1
         numeric_list.append(convert_map[value])
+    if numbers == len(word_list):
+        print(f'Core:: Current column is already numeric, no changes will be applied')
+        return None
     return numeric_list
 
 
@@ -41,8 +47,14 @@ def convert_text_to_numeric_by_alphabet_order(word_list: t.List[str]):
     alph_word_list.sort()
     convert_map = create_map(alph_word_list)
     numeric_list = []
+    numbers = 0
     for value in word_list:
+        if type(value) == int or type(value) == float:
+            numbers += 1
         numeric_list.append(convert_map[value])
+    if numbers == len(word_list):
+        print(f'Core:: Current column is already numeric, no changes will be applied')
+        return None
     return numeric_list
 
 
