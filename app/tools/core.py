@@ -69,6 +69,9 @@ def create_map(word_list: t.List[str]):
 
 
 def discretisation(values: t.List[str], divisions: int = 3):
+    if not check_if_only_numeric(values):
+        print(f'Core:: Only numeric values can be discretized')
+        return None
     min_val = min(values)
     max_val = max(values)
     length = (max_val - min_val)/divisions
@@ -79,6 +82,9 @@ def discretisation(values: t.List[str], divisions: int = 3):
 
 
 def standarization(values: t.List[str]):
+    if not check_if_only_numeric(values):
+        print(f'Core:: Only numeric values can be standarized')
+        return None
     mean = np.mean(values)
     std = np.std(values)
     standarize_values = []
@@ -96,3 +102,10 @@ def change_data_range(values: t.List[str], min: int, max: int):
     for value in values:
         new_values.append((((value - old_min) * new_range) / old_range) + min)
     return new_values
+
+def check_if_only_numeric(values: t.List[str]):
+    for value in values:
+        if type(value) != int and type(value) != float:
+            print(f'Not numeric value: {value}')
+            return False
+    return True

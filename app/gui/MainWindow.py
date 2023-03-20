@@ -20,6 +20,8 @@ class MainWindow(QMainWindow):
         self.toolbar.file_open.connect(self.file_open)
         self.toolbar.file_save.connect(self.file_save)
         self.toolbar.column_to_numerize.connect(self.numerize_column)
+        self.toolbar.column_to_discretize.connect(self.discretize_column)
+        self.toolbar.column_to_standarize.connect(self.standarize_column)
 
         # create table
         self.table = QTableView()
@@ -74,7 +76,7 @@ class MainWindow(QMainWindow):
         self.data = df
 
     def numerize_column(self, column_name: str, is_by_alph_chosen: bool):
-        print(f'MainWindow:: Selected column: {column_name} values: {self.data[column_name]}')
+        print(f'MainWindow:: Selected column to numerize: {column_name} values: {self.data[column_name]}')
         if is_by_alph_chosen:
             numerized_column = convert_text_to_numeric_by_alphabet_order(self.data[column_name])
         else:
@@ -84,4 +86,24 @@ class MainWindow(QMainWindow):
             return
         print(f'MainWindow:: Numerized column values: {numerized_column}')
         self.data[column_name] = numerized_column
+        self.update_table(self.data)
+
+    def discretize_column(self, column_name: str, division_number: int):
+        print(f'MainWindow:: Selected column to discretize: {column_name} values: {self.data[column_name]}')
+        discretized_column = discretisation(self.data[column_name], division_number)
+        if discretized_column is None:
+            print(f'MainWindow:: No values discretized')
+            return
+        print(f'MainWindow:: Discretized column values: {discretized_column}')
+        self.data[column_name] = discretized_column
+        self.update_table(self.data)
+
+    def standarize_column(self, column_name: str):
+        print(f'MainWindow:: Selected column to standarize: {column_name} values: {self.data[column_name]}')
+        standarized_column = standarization(self.data[column_name])
+        if standarized_column is None:
+            print(f'MainWindow:: No values standarized')
+            return
+        print(f'MainWindow:: Standarized column values: {standarized_column}')
+        self.data[column_name] = standarized_column
         self.update_table(self.data)

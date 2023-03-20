@@ -1,12 +1,16 @@
 from PyQt6.QtWidgets import QToolBar, QFileDialog, QMessageBox
 from PyQt6.QtGui import QAction
 from PyQt6.QtCore import pyqtSignal as Signal
+from gui.DiscretizeDialog import DiscretizeDialog
+from gui.StandarizeDialog import StandarizeDialog
 from gui.TextToNumberDialog import TextToNumberDialog
 
 class Toolbar(QToolBar):
     file_open = Signal(str)
     file_save = Signal(str)
     column_to_numerize = Signal(str, bool)
+    column_to_discretize = Signal(str, int)
+    column_to_standarize = Signal(str)
 
     def __init__(self, name) -> None:
         super(Toolbar, self).__init__()
@@ -106,6 +110,13 @@ class Toolbar(QToolBar):
                 defaultButton=QMessageBox.StandardButton.Discard,
             )
             return
+        dlg = DiscretizeDialog(self.headers)
+        dlg.column_chosen.connect(self.column_to_discretize_chosen)
+        dlg.exec()
+
+    def column_to_discretize_chosen(self, column: str, division_number: int):
+        print(f'Toolbar:: Column to standarize: {column} with division number: {division_number}')
+        self.column_to_discretize.emit(column, division_number)
 
     def standarize_button_clicked(self):
         if self.headers == None:
@@ -117,6 +128,13 @@ class Toolbar(QToolBar):
                 defaultButton=QMessageBox.StandardButton.Discard,
             )
             return
+        dlg = StandarizeDialog(self.headers)
+        dlg.column_chosen.connect(self.column_to_standarize_chosen)
+        dlg.exec()
+
+    def column_to_standarize_chosen(self, column: str):
+        print(f'Toolbar:: Column to standarize: {column}')
+        self.column_to_standarize.emit(column)
 
     def change_range_button_clicked(self):
         if self.headers == None:
