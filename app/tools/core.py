@@ -94,6 +94,9 @@ def standarization(values: t.List[str]):
 
 
 def change_data_range(values: t.List[str], min: int, max: int):
+    if not check_if_only_numeric(values):
+        print(f'Core:: Only numeric values can be changed ranged')
+        return None
     old_min = np.min(values)
     old_max = np.max(values)
     old_range = (old_max - old_min)

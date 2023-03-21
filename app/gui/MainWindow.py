@@ -22,6 +22,7 @@ class MainWindow(QMainWindow):
         self.toolbar.column_to_numerize.connect(self.numerize_column)
         self.toolbar.column_to_discretize.connect(self.discretize_column)
         self.toolbar.column_to_standarize.connect(self.standarize_column)
+        self.toolbar.column_to_change_range.connect(self.change_range_column)
 
         # create table
         self.table = QTableView()
@@ -106,4 +107,14 @@ class MainWindow(QMainWindow):
             return
         print(f'MainWindow:: Standarized column values: {standarized_column}')
         self.data[column_name] = standarized_column
+        self.update_table(self.data)
+
+    def change_range_column(self, column_name: str, min_val: int, max_val: int):
+        print(f'MainWindow:: Selected column to change_range: {column_name} values: {self.data[column_name]}')
+        changed_range_column = change_data_range(self.data[column_name], min_val, max_val)
+        if changed_range_column is None:
+            print(f'MainWindow:: No values changed range')
+            return
+        print(f'MainWindow:: Changed range column column values: {changed_range_column}')
+        self.data[column_name] = changed_range_column
         self.update_table(self.data)

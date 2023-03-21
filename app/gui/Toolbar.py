@@ -4,6 +4,7 @@ from PyQt6.QtCore import pyqtSignal as Signal
 from gui.DiscretizeDialog import DiscretizeDialog
 from gui.StandarizeDialog import StandarizeDialog
 from gui.TextToNumberDialog import TextToNumberDialog
+from gui.ChangeDataRangeDialog import ChangeDataRangeDialog
 
 class Toolbar(QToolBar):
     file_open = Signal(str)
@@ -11,6 +12,7 @@ class Toolbar(QToolBar):
     column_to_numerize = Signal(str, bool)
     column_to_discretize = Signal(str, int)
     column_to_standarize = Signal(str)
+    column_to_change_range = Signal(str, int, int)
 
     def __init__(self, name) -> None:
         super(Toolbar, self).__init__()
@@ -146,3 +148,10 @@ class Toolbar(QToolBar):
                 defaultButton=QMessageBox.StandardButton.Discard,
             )
             return
+        dlg = ChangeDataRangeDialog(self.headers)
+        dlg.column_chosen.connect(self.column_to_change_range_chosen)
+        dlg.exec()
+
+    def column_to_change_range_chosen(self, column: str, range_min: int, range_max: int):
+        print(f'Toolbar:: Column to change_range: {column} with range: ({range_min},{range_max})')
+        self.column_to_change_range.emit(column, range_min, range_max)
