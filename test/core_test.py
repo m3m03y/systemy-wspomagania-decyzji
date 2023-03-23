@@ -48,12 +48,12 @@ class Test_TestCoreMethods(unittest.TestCase):
         expected = ['sepal.length','sepal.width','petal.length','petal.width','variety']
         self.assertSequenceEqual(headers, expected)
 
-    # def test_read_file_should_handle_excel(self):
-    #     # functionality is working but module cannot be found in test
-    #     df = core.read_file("./example/iris.xlsx")
-    #     headers = df.columns.to_list()
-    #     expected = ['sepal.length','sepal.width','petal.length','petal.width','variety']
-    #     self.assertSequenceEqual(headers, expected)
+    def test_read_file_should_handle_excel(self):
+        # functionality is working but module cannot be found in test
+        df = core.read_file("./example/iris.xlsx")
+        headers = df.columns.to_list()
+        expected = ['sepal.length','sepal.width','petal.length','petal.width','variety']
+        self.assertSequenceEqual(headers, expected)
 
     def test_read_file_should_rise_invalid_extension_exception(self):
         with self.assertRaises(FileNotFoundError):

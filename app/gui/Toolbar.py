@@ -5,6 +5,8 @@ from gui.DiscretizeDialog import DiscretizeDialog
 from gui.StandarizeDialog import StandarizeDialog
 from gui.TextToNumberDialog import TextToNumberDialog
 from gui.ChangeDataRangeDialog import ChangeDataRangeDialog
+from gui.PlotDialog2D import PlotDialog2D
+
 
 class Toolbar(QToolBar):
     file_open = Signal(str)
@@ -13,6 +15,7 @@ class Toolbar(QToolBar):
     column_to_discretize = Signal(str, int)
     column_to_standarize = Signal(str)
     column_to_change_range = Signal(str, int, int)
+    colums_to_display_2Dplot = Signal(str, str)
 
     def __init__(self, name) -> None:
         super(Toolbar, self).__init__()
@@ -31,7 +34,8 @@ class Toolbar(QToolBar):
         self.addAction(save_btn)
 
         to_numeric_btn = QAction("TextToNumber", self)
-        to_numeric_btn.setStatusTip("Change text variables in column to numeric")
+        to_numeric_btn.setStatusTip(
+            "Change text variables in column to numeric")
         to_numeric_btn.setCheckable(False)
         to_numeric_btn.triggered.connect(self.text_to_numeric_button_clicked)
         self.addAction(to_numeric_btn)
@@ -54,29 +58,36 @@ class Toolbar(QToolBar):
         change_range_btn.triggered.connect(self.change_range_button_clicked)
         self.addAction(change_range_btn)
 
+        display_2dplot_btn = QAction("2D plot", self)
+        display_2dplot_btn.setStatusTip("Choose columns to display 2D plot")
+        display_2dplot_btn.setCheckable(False)
+        display_2dplot_btn.triggered.connect(
+            self.display_2dplot_button_clicked)
+        self.addAction(display_2dplot_btn)
+
     def open_file_button_clicked(self):
         print("[OPEN] File explorer dialog open")
-        file_input = QFileDialog.getOpenFileName(self, 
-            'Open file', 
-            "./",
-            "All Files (*);; CSV files (*.csv);; Text files (*.txt);; Excel files (*.xls, *.xlsx)",)
+        file_input = QFileDialog.getOpenFileName(self,
+                                                 'Open file',
+                                                 "./",
+                                                 "All Files (*);; CSV files (*.csv);; Text files (*.txt);; Excel files (*.xls, *.xlsx)",)
         path = file_input[0]
         if path == "" or path == None:
             print(f'Toolbar:: No file selected')
-            return 
+            return
         print(f"Toolbar:: Open: {path} file from input: {file_input}")
         self.file_open.emit(path)
 
     def save_file_button_clicked(self):
         print("[SAVE] File explorer dialog open")
-        file_input = QFileDialog.getSaveFileName(self, 
-            'Open file', 
-            "./",
-            "CSV files (*.csv);; Text files (*.txt);; Excel files (*.xls, *.xlsx)",)
+        file_input = QFileDialog.getSaveFileName(self,
+                                                 'Open file',
+                                                 "./",
+                                                 "CSV files (*.csv);; Text files (*.txt);; Excel files (*.xls, *.xlsx)",)
         path = file_input[0]
         if path == "" or path == None:
             print(f'Toolbar:: No file selected')
-            return 
+            return
         print(f"Toolbar:: Get file path: {path} from input: {file_input}")
         self.file_save.emit(path)
 
@@ -99,7 +110,8 @@ class Toolbar(QToolBar):
         dlg.exec()
 
     def column_to_numerize_chosen(self, column: str, is_by_alph_chosen: bool):
-        print(f'Toolbar:: Column to numerize: {column}, is alphabetically order chosen: {is_by_alph_chosen}')
+        print(
+            f'Toolbar:: Column to numerize: {column}, is alphabetically order chosen: {is_by_alph_chosen}')
         self.column_to_numerize.emit(column, is_by_alph_chosen)
 
     def discretize_button_clicked(self):
@@ -117,7 +129,8 @@ class Toolbar(QToolBar):
         dlg.exec()
 
     def column_to_discretize_chosen(self, column: str, division_number: int):
-        print(f'Toolbar:: Column to standarize: {column} with division number: {division_number}')
+        print(
+            f'Toolbar:: Column to standarize: {column} with division number: {division_number}')
         self.column_to_discretize.emit(column, division_number)
 
     def standarize_button_clicked(self):
@@ -153,5 +166,27 @@ class Toolbar(QToolBar):
         dlg.exec()
 
     def column_to_change_range_chosen(self, column: str, range_min: int, range_max: int):
-        print(f'Toolbar:: Column to change_range: {column} with range: ({range_min},{range_max})')
+        print(
+            f'Toolbar:: Column to change_range: {column} with range: ({range_min},{range_max})')
         self.column_to_change_range.emit(column, range_min, range_max)
+
+    def display_2dplot_button_clicked(self):
+        if self.headers == None:
+            QMessageBox.critical(
+                self,
+                "No data selected!",
+                "Dataset must be load from file first.",
+                buttons=QMessageBox.StandardButton.Discard,
+                defaultButton=QMessageBox.StandardButton.Discard,
+            )
+            return
+        dlg = PlotDialog2D(self.headers)
+        dlg.columns_chosen.connect(self.column_to_2D_plot_chosen)
+        #dlg.y_column_chosen.connect(self.column_to_2D_plot_chosen)
+        dlg.exec()
+
+    def column_to_2D_plot_chosen(self, column_x: str, column_y: str):
+        print(
+            f'Toolbar:: Column to display 2D plot x: {column_x} y: {column_y}')
+
+        self.colums_to_display_2Dplot.emit(column_x, column_y)
