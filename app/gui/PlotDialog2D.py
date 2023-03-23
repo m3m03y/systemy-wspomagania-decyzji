@@ -82,7 +82,7 @@ class DisplayPlot(QDialog):
         for item in self.class_name:
             if item not in unique_elements:
                 unique_elements.append(item)
-        cmap = plt.get_cmap('viridis', 3)
+        cmap = plt.get_cmap('viridis')
         scatter = ax.scatter(self.x, self.y, c=self.class_numbers, cmap=cmap)
         print(f'Class names: {unique_elements}')
         ax.legend(handles=scatter.legend_elements()[0], labels=unique_elements)
