@@ -15,7 +15,7 @@ class Toolbar(QToolBar):
     column_to_discretize = Signal(str, int)
     column_to_standarize = Signal(str)
     column_to_change_range = Signal(str, int, int)
-    colums_to_display_2Dplot = Signal(str, str)
+    colums_to_display_2Dplot = Signal(str, str, str)
 
     def __init__(self, name) -> None:
         super(Toolbar, self).__init__()
@@ -185,8 +185,9 @@ class Toolbar(QToolBar):
         #dlg.y_column_chosen.connect(self.column_to_2D_plot_chosen)
         dlg.exec()
 
-    def column_to_2D_plot_chosen(self, column_x: str, column_y: str):
+    def column_to_2D_plot_chosen(self, column_x: str, column_y: str, column_class: str):
         print(
-            f'Toolbar:: Column to display 2D plot x: {column_x} y: {column_y}')
+            f'Toolbar:: Column to display 2D plot x: {column_x} y: {column_y} class: {column_class}')
 
-        self.colums_to_display_2Dplot.emit(column_x, column_y)
+        self.colums_to_display_2Dplot.emit(column_x, column_y, column_class)
+

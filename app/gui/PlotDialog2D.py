@@ -8,7 +8,8 @@ import seaborn as sns
 
 
 class PlotDialog2D(QDialog):
-    columns_chosen = Signal(str, str)
+    columns_chosen = Signal(str, str, str)
+    nonclass_column_prefixes = ["numerized", "discretized", "standarized", "ranged"]
 
     def __init__(self, headers):
         super().__init__()
@@ -23,26 +24,32 @@ class PlotDialog2D(QDialog):
         self.layout = QVBoxLayout()
         self.columns_x = QComboBox()
         self.columns_y = QComboBox()
+        self.columns_class = QComboBox()
         self.columns_x.addItem(None)
         self.columns_y.addItem(None)
         self.columns_x.addItems(headers)
         self.columns_y.addItems(headers)
+        self.columns_class.addItems(
+                [x for x in self.headers if x.split('_')[0] not in self.nonclass_column_prefixes])
         self.columns_x.currentTextChanged.connect(self.get_y_headers_left)
 
         self.layout.addWidget(QLabel("Choose column x"))
         self.layout.addWidget(self.columns_x)
         self.layout.addWidget(QLabel("Choose column y"))
         self.layout.addWidget(self.columns_y)
+        self.layout.addWidget(QLabel("Choose class"))
+        self.layout.addWidget(self.columns_class)
         self.layout.addWidget(self.buttonBox)
         self.setLayout(self.layout)
 
     def accept(self):
         chosen_column_x = self.columns_x.currentText()
         chosen_column_y = self.columns_y.currentText()
-        if chosen_column_x != None and chosen_column_y != None:
+        chosen_class = self.columns_class.currentText()
+        if chosen_column_x != None and chosen_column_y != None and chosen_class != None:
             print(
-                f'Plot 2D Dialog:: Selected column x: {chosen_column_x}  y: {chosen_column_y}')
-            self.columns_chosen.emit(chosen_column_x, chosen_column_y)
+                f'Plot 2D Dialog:: Selected column x: {chosen_column_x}  y: {chosen_column_y} class: {chosen_class}')
+            self.columns_chosen.emit(chosen_column_x, chosen_column_y, chosen_class)
 
         self.close()
 

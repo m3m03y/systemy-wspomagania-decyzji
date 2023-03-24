@@ -10,7 +10,6 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.data = None
-        self.class_column = None
 
         # initialize main window
         self.setWindowTitle(
@@ -72,10 +71,10 @@ class MainWindow(QMainWindow):
     def update_table(self, df: pd.DataFrame):
         print(f'MainWindow:: Updated table: {df}')
         self.data = df
-        self.class_column = df.iloc[:, -1:]
         self.model = TableModel(self.data)
         self.table.setModel(self.model)
         self.model.data_edit.connect(self.data_changed)
+        self.toolbar.update_headers(df.columns.to_list())
         self.update()
 
     def data_changed(self, df: pd.DataFrame):
@@ -95,7 +94,8 @@ class MainWindow(QMainWindow):
             print(f'MainWindow:: No values changed to numeric')
             return
         print(f'MainWindow:: Numerized column values: {numerized_column}')
-        self.data[column_name] = numerized_column
+        prefix = "alph" if is_by_alph_chosen else "by_presence"
+        self.data[f'numerize_{prefix}_{column_name}'] = numerized_column
         self.update_table(self.data)
 
     def discretize_column(self, column_name: str, division_number: int):
@@ -107,7 +107,7 @@ class MainWindow(QMainWindow):
             print(f'MainWindow:: No values discretized')
             return
         print(f'MainWindow:: Discretized column values: {discretized_column}')
-        self.data[column_name] = discretized_column
+        self.data[f'discretized_{division_number}_{column_name}'] = discretized_column
         self.update_table(self.data)
 
     def standarize_column(self, column_name: str):
@@ -118,7 +118,7 @@ class MainWindow(QMainWindow):
             print(f'MainWindow:: No values standarized')
             return
         print(f'MainWindow:: Standarized column values: {standarized_column}')
-        self.data[column_name] = standarized_column
+        self.data[f'standarized_{column_name}'] = standarized_column
         self.update_table(self.data)
 
     def change_range_column(self, column_name: str, min_val: int, max_val: int):
@@ -131,23 +131,21 @@ class MainWindow(QMainWindow):
             return
         print(
             f'MainWindow:: Changed range column column values: {changed_range_column}')
-        self.data[column_name] = changed_range_column
+        self.data[f'ranged_{min_val}_{max_val}_{column_name}'] = changed_range_column
         self.update_table(self.data)
 
-    def plot2D(self, x_column_name: str, y_column_name: str):
+    def plot2D(self, x_column_name: str, y_column_name: str, class_column_name: str):
         print(
-            f'MainWindow:: Selected column to plot x: {x_column_name} y: {y_column_name}')
+            f'MainWindow:: Selected column to plot x: {x_column_name} y: {y_column_name} class: {class_column_name}')
         x_range = self.data[x_column_name]
         y_range = self.data[y_column_name]
-
-        class_column_name = list(self.data.columns)[-1]
         class_column = self.data[class_column_name]
-        print(f'Class column name: {class_column_name}')
-        print(f'Classes {self.class_column}')
-        print(f'x range: {x_range}; y_range: {y_range}')
-        self.numerize_column(
-            class_column_name, False)
-        class_column_numerized = self.data[f'numerize_{class_column_name}']
+
+        print(f'x range: {x_range}; y_range: {y_range}; class: {class_column}')
+        if not check_if_only_numeric(class_column):
+            class_column_numerized = convert_text_to_numeric_by_alphabet_order(class_column)
+        else:
+            class_column_numerized = class_column
         print(f'Class to numbers: {class_column_numerized}')
         dlg = DisplayPlot(x_range, y_range, x_column_name,
                           y_column_name, class_column, class_column_numerized)
