@@ -4,8 +4,6 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 import matplotlib.pyplot as plt
-import seaborn as sns
-
 
 class PlotDialog3D(QDialog):
     columns_chosen = Signal(str, str, str, str)

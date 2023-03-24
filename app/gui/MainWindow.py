@@ -3,6 +3,7 @@ from gui.TableModel import TableModel
 from gui.Toolbar import Toolbar
 from gui.PlotDialog2D import DisplayPlot
 from gui.Plot3D import Display3DPlot
+from gui.PlotHistogram import DisplayHistogram
 from tools.core import *
 import pandas as pd
 
@@ -27,8 +28,9 @@ class MainWindow(QMainWindow):
         self.toolbar.column_to_discretize.connect(self.discretize_column)
         self.toolbar.column_to_standarize.connect(self.standarize_column)
         self.toolbar.column_to_change_range.connect(self.change_range_column)
-        self.toolbar.colums_to_display_2Dplot.connect(self.plot2D)
-        self.toolbar.colums_to_display_3Dplot.connect(self.plot3D)
+        self.toolbar.columns_to_display_2Dplot.connect(self.plot2D)
+        self.toolbar.columns_to_display_3Dplot.connect(self.plot3D)
+        self.toolbar.columns_to_display_histogram.connect(self.displayHistogram)
 
         # create table
         self.table = QTableView()
@@ -97,7 +99,7 @@ class MainWindow(QMainWindow):
             return
         print(f'MainWindow:: Numerized column values: {numerized_column}')
         prefix = "alph" if is_by_alph_chosen else "by_presence"
-        self.data[f'numerize_{prefix}_{column_name}'] = numerized_column
+        self.data[f'numerized_{prefix}_{column_name}'] = numerized_column
         self.update_table(self.data)
 
     def discretize_column(self, column_name: str, division_number: int):
@@ -187,3 +189,8 @@ class MainWindow(QMainWindow):
                           y_column_name, z_column_name, class_column, class_column_numerized)
         dlg.exec()
 
+    def displayHistogram(self, x_column_name: str, class_column_name: str):
+        print(
+            f'MainWindow:: Selected column to plot histogram: {x_column_name}, class: {class_column_name}')
+        dlg = DisplayHistogram(x_column_name, class_column_name, self.data)
+        dlg.exec()
