@@ -17,7 +17,7 @@ class Toolbar(QToolBar):
     column_to_standarize = Signal(str)
     column_to_change_range = Signal(str, int, int)
     colums_to_display_2Dplot = Signal(str, str, str)
-    colums_to_display_3Dplot = Signal(str, str, str)
+    colums_to_display_3Dplot = Signal(str, str, str, str)
 
     def __init__(self, name) -> None:
         super(Toolbar, self).__init__()
@@ -214,8 +214,8 @@ class Toolbar(QToolBar):
         dlg.columns_chosen.connect(self.column_to_3D_plot_chosen)
         dlg.exec()
 
-    def column_to_3D_plot_chosen(self, column_x: str, column_y: str, column_z: str):
+    def column_to_3D_plot_chosen(self, column_x: str, column_y: str, column_z: str, column_class: str):
         print(
-            f'Toolbar:: Column to display 3D plot x: {column_x} y: {column_y} z: {column_z}')
+            f'Toolbar:: Column to display 3D plot x: {column_x} y: {column_y} z: {column_z} class: {column_class}')
 
-        self.colums_to_display_3Dplot.emit(column_x, column_y, column_z)
+        self.colums_to_display_3Dplot.emit(column_x, column_y, column_z, column_class)

@@ -162,9 +162,9 @@ class MainWindow(QMainWindow):
                           y_column_name, class_column, class_column_numerized)
         dlg.exec()
 
-    def plot3D(self, x_column_name: str, y_column_name: str, z_column_name: str):
+    def plot3D(self, x_column_name: str, y_column_name: str, z_column_name: str, class_column_name: str):
         print(
-            f'MainWindow:: Selected column to plot x: {x_column_name} y: {y_column_name} z: {z_column_name}')
+            f'MainWindow:: Selected column to plot x: {x_column_name} y: {y_column_name} z: {z_column_name}, class: {class_column_name}')
         x_range = self.data[x_column_name]
         y_range = self.data[y_column_name]
         z_range = self.data[z_column_name]
@@ -177,8 +177,13 @@ class MainWindow(QMainWindow):
                 defaultButton=QMessageBox.StandardButton.Discard,
             )
             return 
-        print(f'x range: {x_range}; y_range: {y_range}; z: {z_range}')
+        class_column = self.data[class_column_name]
+        print(f'x range: {x_range}; y_range: {y_range}; z: {z_range}; class: {class_column}')
+        if not check_if_only_numeric(class_column):
+            class_column_numerized = convert_text_to_numeric_by_alphabet_order(class_column)
+        else:
+            class_column_numerized = class_column
         dlg = Display3DPlot(x_range, y_range, z_range, x_column_name,
-                          y_column_name, z_column_name)
+                          y_column_name, z_column_name, class_column, class_column_numerized)
         dlg.exec()
 
