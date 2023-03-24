@@ -140,14 +140,14 @@ class MainWindow(QMainWindow):
         x_range = self.data[x_column_name]
         y_range = self.data[y_column_name]
 
-        class_column_name = list(self.data.columns)
-        class_column = self.data[class_column_name[-1]]
-        print(f'Class column name {class_column_name}')
+        class_column_name = list(self.data.columns)[-1]
+        class_column = self.data[class_column_name]
+        print(f'Class column name: {class_column_name}')
         print(f'Classes {self.class_column}')
         print(f'x range: {x_range}; y_range: {y_range}')
         self.numerize_column(
-            class_column_name[-1], False)
-        class_column_numerized = self.data[class_column_name[-1]]
+            class_column_name, False)
+        class_column_numerized = self.data[f'numerize_{class_column_name}']
         print(f'Class to numbers: {class_column_numerized}')
         dlg = DisplayPlot(x_range, y_range, x_column_name,
                           y_column_name, class_column, class_column_numerized)
