@@ -109,7 +109,7 @@ class Display3DPlot(QDialog):
 
     def plot(self):
         ax = self.figure.add_subplot(projection='3d')
-        ax.plot_trisurf(self.x, self.y, self.z)
+        ax.scatter(self.x, self.y, self.z)
 
         ax.set_xlabel(self.x_axis)
         ax.set_ylabel(self.y_axis)
