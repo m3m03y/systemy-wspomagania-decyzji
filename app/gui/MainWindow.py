@@ -2,6 +2,7 @@ from PyQt6.QtWidgets import QMainWindow, QTableView, QStatusBar, QMessageBox
 from gui.TableModel import TableModel
 from gui.Toolbar import Toolbar
 from gui.PlotDialog2D import DisplayPlot
+from gui.Plot3D import Display3DPlot
 from tools.core import *
 import pandas as pd
 
@@ -27,6 +28,7 @@ class MainWindow(QMainWindow):
         self.toolbar.column_to_standarize.connect(self.standarize_column)
         self.toolbar.column_to_change_range.connect(self.change_range_column)
         self.toolbar.colums_to_display_2Dplot.connect(self.plot2D)
+        self.toolbar.colums_to_display_3Dplot.connect(self.plot3D)
 
         # create table
         self.table = QTableView()
@@ -139,6 +141,15 @@ class MainWindow(QMainWindow):
             f'MainWindow:: Selected column to plot x: {x_column_name} y: {y_column_name} class: {class_column_name}')
         x_range = self.data[x_column_name]
         y_range = self.data[y_column_name]
+        if not (check_if_only_numeric(x_range) and check_if_only_numeric(y_range)):
+            QMessageBox.critical(
+                self,
+                "String values selected!",
+                "Values in selected columns must be first changed to number.",
+                buttons=QMessageBox.StandardButton.Discard,
+                defaultButton=QMessageBox.StandardButton.Discard,
+            )
+            return 
         class_column = self.data[class_column_name]
 
         print(f'x range: {x_range}; y_range: {y_range}; class: {class_column}')
@@ -150,3 +161,24 @@ class MainWindow(QMainWindow):
         dlg = DisplayPlot(x_range, y_range, x_column_name,
                           y_column_name, class_column, class_column_numerized)
         dlg.exec()
+
+    def plot3D(self, x_column_name: str, y_column_name: str, z_column_name: str):
+        print(
+            f'MainWindow:: Selected column to plot x: {x_column_name} y: {y_column_name} z: {z_column_name}')
+        x_range = self.data[x_column_name]
+        y_range = self.data[y_column_name]
+        z_range = self.data[z_column_name]
+        if not (check_if_only_numeric(x_range) and check_if_only_numeric(y_range) and check_if_only_numeric(z_range)):
+            QMessageBox.critical(
+                self,
+                "String values selected!",
+                "Values in selected columns must be first changed to number.",
+                buttons=QMessageBox.StandardButton.Discard,
+                defaultButton=QMessageBox.StandardButton.Discard,
+            )
+            return 
+        print(f'x range: {x_range}; y_range: {y_range}; z: {z_range}')
+        dlg = Display3DPlot(x_range, y_range, z_range, x_column_name,
+                          y_column_name, z_column_name)
+        dlg.exec()
+

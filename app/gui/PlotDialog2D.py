@@ -28,7 +28,6 @@ class PlotDialog2D(QDialog):
         self.columns_x.addItem(None)
         self.columns_y.addItem(None)
         self.columns_x.addItems(headers)
-        self.columns_y.addItems(headers)
         self.columns_class.addItems(
                 [x for x in self.headers if x.split('_')[0] not in self.nonclass_column_prefixes])
         self.columns_x.currentTextChanged.connect(self.get_y_headers_left)
@@ -46,7 +45,7 @@ class PlotDialog2D(QDialog):
         chosen_column_x = self.columns_x.currentText()
         chosen_column_y = self.columns_y.currentText()
         chosen_class = self.columns_class.currentText()
-        if chosen_column_x != None and chosen_column_y != None and chosen_class != None:
+        if (chosen_column_x != None and chosen_column_y != None and chosen_class != None) and (chosen_column_x != '' and chosen_column_y != '' and chosen_class != ''):
             print(
                 f'Plot 2D Dialog:: Selected column x: {chosen_column_x}  y: {chosen_column_y} class: {chosen_class}')
             self.columns_chosen.emit(chosen_column_x, chosen_column_y, chosen_class)
@@ -58,6 +57,7 @@ class PlotDialog2D(QDialog):
         if (self.columns_x.currentText() != None):
             choosen_column = self.columns_x.currentText()
             self.columns_y.clear()
+            self.columns_y.addItem(None)
             self.columns_y.addItems(
                 [x for x in self.headers if x != choosen_column])
 

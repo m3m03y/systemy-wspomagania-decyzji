@@ -6,6 +6,7 @@ from gui.StandarizeDialog import StandarizeDialog
 from gui.TextToNumberDialog import TextToNumberDialog
 from gui.ChangeDataRangeDialog import ChangeDataRangeDialog
 from gui.PlotDialog2D import PlotDialog2D
+from gui.Plot3D import PlotDialog3D
 
 
 class Toolbar(QToolBar):
@@ -16,6 +17,7 @@ class Toolbar(QToolBar):
     column_to_standarize = Signal(str)
     column_to_change_range = Signal(str, int, int)
     colums_to_display_2Dplot = Signal(str, str, str)
+    colums_to_display_3Dplot = Signal(str, str, str)
 
     def __init__(self, name) -> None:
         super(Toolbar, self).__init__()
@@ -64,6 +66,13 @@ class Toolbar(QToolBar):
         display_2dplot_btn.triggered.connect(
             self.display_2dplot_button_clicked)
         self.addAction(display_2dplot_btn)
+
+        display_3dplot_btn = QAction("3D plot", self)
+        display_3dplot_btn.setStatusTip("Choose columns to display 3D plot")
+        display_3dplot_btn.setCheckable(False)
+        display_3dplot_btn.triggered.connect(
+            self.display_3dplot_button_clicked)
+        self.addAction(display_3dplot_btn)
 
     def open_file_button_clicked(self):
         print("[OPEN] File explorer dialog open")
@@ -191,3 +200,22 @@ class Toolbar(QToolBar):
 
         self.colums_to_display_2Dplot.emit(column_x, column_y, column_class)
 
+    def display_3dplot_button_clicked(self):
+        if self.headers == None:
+            QMessageBox.critical(
+                self,
+                "No data selected!",
+                "Dataset must be load from file first.",
+                buttons=QMessageBox.StandardButton.Discard,
+                defaultButton=QMessageBox.StandardButton.Discard,
+            )
+            return
+        dlg = PlotDialog3D(self.headers)
+        dlg.columns_chosen.connect(self.column_to_3D_plot_chosen)
+        dlg.exec()
+
+    def column_to_3D_plot_chosen(self, column_x: str, column_y: str, column_z: str):
+        print(
+            f'Toolbar:: Column to display 3D plot x: {column_x} y: {column_y} z: {column_z}')
+
+        self.colums_to_display_3Dplot.emit(column_x, column_y, column_z)
