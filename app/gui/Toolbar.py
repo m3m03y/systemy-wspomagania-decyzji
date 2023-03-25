@@ -6,6 +6,8 @@ from gui.StandarizeDialog import StandarizeDialog
 from gui.TextToNumberDialog import TextToNumberDialog
 from gui.ChangeDataRangeDialog import ChangeDataRangeDialog
 from gui.PlotDialog2D import PlotDialog2D
+from gui.Plot3D import PlotDialog3D
+from gui.PlotHistogram import PlotHistogram
 
 
 class Toolbar(QToolBar):
@@ -15,7 +17,9 @@ class Toolbar(QToolBar):
     column_to_discretize = Signal(str, int)
     column_to_standarize = Signal(str)
     column_to_change_range = Signal(str, int, int)
-    colums_to_display_2Dplot = Signal(str, str, str)
+    columns_to_display_2Dplot = Signal(str, str, str)
+    columns_to_display_3Dplot = Signal(str, str, str, str)
+    columns_to_display_histogram = Signal(str, str)
 
     def __init__(self, name) -> None:
         super(Toolbar, self).__init__()
@@ -64,6 +68,20 @@ class Toolbar(QToolBar):
         display_2dplot_btn.triggered.connect(
             self.display_2dplot_button_clicked)
         self.addAction(display_2dplot_btn)
+
+        display_3dplot_btn = QAction("3D plot", self)
+        display_3dplot_btn.setStatusTip("Choose columns to display 3D plot")
+        display_3dplot_btn.setCheckable(False)
+        display_3dplot_btn.triggered.connect(
+            self.display_3dplot_button_clicked)
+        self.addAction(display_3dplot_btn)
+
+        display_histogram_btn = QAction("Histogram", self)
+        display_histogram_btn.setStatusTip("Choose columns to display histogram")
+        display_histogram_btn.setCheckable(False)
+        display_histogram_btn.triggered.connect(
+            self.display_histogram_button_clicked)
+        self.addAction(display_histogram_btn)
 
     def open_file_button_clicked(self):
         print("[OPEN] File explorer dialog open")
@@ -189,5 +207,44 @@ class Toolbar(QToolBar):
         print(
             f'Toolbar:: Column to display 2D plot x: {column_x} y: {column_y} class: {column_class}')
 
-        self.colums_to_display_2Dplot.emit(column_x, column_y, column_class)
+        self.columns_to_display_2Dplot.emit(column_x, column_y, column_class)
 
+    def display_3dplot_button_clicked(self):
+        if self.headers == None:
+            QMessageBox.critical(
+                self,
+                "No data selected!",
+                "Dataset must be load from file first.",
+                buttons=QMessageBox.StandardButton.Discard,
+                defaultButton=QMessageBox.StandardButton.Discard,
+            )
+            return
+        dlg = PlotDialog3D(self.headers)
+        dlg.columns_chosen.connect(self.column_to_3D_plot_chosen)
+        dlg.exec()
+
+    def column_to_3D_plot_chosen(self, column_x: str, column_y: str, column_z: str, column_class: str):
+        print(
+            f'Toolbar:: Column to display 3D plot x: {column_x} y: {column_y} z: {column_z} class: {column_class}')
+
+        self.columns_to_display_3Dplot.emit(column_x, column_y, column_z, column_class)
+
+    def display_histogram_button_clicked(self):
+        if self.headers == None:
+            QMessageBox.critical(
+                self,
+                "No data selected!",
+                "Dataset must be load from file first.",
+                buttons=QMessageBox.StandardButton.Discard,
+                defaultButton=QMessageBox.StandardButton.Discard,
+            )
+            return
+        dlg = PlotHistogram(self.headers)
+        dlg.columns_chosen.connect(self.column_to_histogram_chosen)
+        dlg.exec()
+
+    def column_to_histogram_chosen(self, column_x: str, column_class: str):
+        print(
+            f'Toolbar:: Column to display histogram x: {column_x} class: {column_class}')
+
+        self.columns_to_display_histogram.emit(column_x, column_class)
