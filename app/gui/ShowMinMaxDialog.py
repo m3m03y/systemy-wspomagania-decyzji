@@ -14,8 +14,8 @@ class ShowMinMaxDialog(QDialog):
 
         self.buttonBox = QDialogButtonBox(QBtn)
         self.buttonBox.accepted.connect(self.accept)
-
-        self.headers.append('all')
+        if 'all' not in self.headers:
+            self.headers.append('all')
         self.layout = QVBoxLayout()
         self.columns = QComboBox()
         self.min_max = QComboBox()
