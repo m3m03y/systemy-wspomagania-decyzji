@@ -6,6 +6,7 @@ from gui.StandarizeDialog import StandarizeDialog
 from gui.TextToNumberDialog import TextToNumberDialog
 from gui.ChangeDataRangeDialog import ChangeDataRangeDialog
 from gui.PlotDialog2D import PlotDialog2D
+from gui.ShowMinMaxDialog import ShowMinMaxDialog
 from gui.Plot3D import PlotDialog3D
 from gui.PlotHistogram import PlotHistogram
 
@@ -18,6 +19,7 @@ class Toolbar(QToolBar):
     column_to_standarize = Signal(str)
     column_to_change_range = Signal(str, int, int)
     columns_to_display_2Dplot = Signal(str, str, str)
+    min_max_colors = Signal(str, int, str)
     columns_to_display_3Dplot = Signal(str, str, str, str)
     columns_to_display_histogram = Signal(str, str)
 
@@ -69,6 +71,13 @@ class Toolbar(QToolBar):
             self.display_2dplot_button_clicked)
         self.addAction(display_2dplot_btn)
 
+        min_max_color_btn = QAction("Min max color", self)
+        min_max_color_btn.setStatusTip("Choose percentage of min/max")
+        min_max_color_btn.setCheckable(False)
+        min_max_color_btn.triggered.connect(
+            self.show_min_max_button_clicked)
+        self.addAction(min_max_color_btn)
+
         display_3dplot_btn = QAction("3D plot", self)
         display_3dplot_btn.setStatusTip("Choose columns to display 3D plot")
         display_3dplot_btn.setCheckable(False)
@@ -82,6 +91,7 @@ class Toolbar(QToolBar):
         display_histogram_btn.triggered.connect(
             self.display_histogram_button_clicked)
         self.addAction(display_histogram_btn)
+
 
     def open_file_button_clicked(self):
         print("[OPEN] File explorer dialog open")
@@ -200,7 +210,7 @@ class Toolbar(QToolBar):
             return
         dlg = PlotDialog2D(self.headers)
         dlg.columns_chosen.connect(self.column_to_2D_plot_chosen)
-        #dlg.y_column_chosen.connect(self.column_to_2D_plot_chosen)
+        # dlg.y_column_chosen.connect(self.column_to_2D_plot_chosen)
         dlg.exec()
 
     def column_to_2D_plot_chosen(self, column_x: str, column_y: str, column_class: str):
@@ -246,5 +256,25 @@ class Toolbar(QToolBar):
     def column_to_histogram_chosen(self, column_x: str, column_class: str):
         print(
             f'Toolbar:: Column to display histogram x: {column_x} class: {column_class}')
-
         self.columns_to_display_histogram.emit(column_x, column_class)
+
+    def show_min_max_button_clicked(self):
+        if self.headers == None:
+            QMessageBox.critical(
+                self,
+                "No data selected!",
+                "Dataset must be load from file first.",
+                buttons=QMessageBox.StandardButton.Discard,
+                defaultButton=QMessageBox.StandardButton.Discard,
+            )
+            return
+        print(type(self.headers))
+        dlg = ShowMinMaxDialog(self.headers)
+        dlg.column_chosen.connect(self.min_max_percentage_chosen)
+
+        dlg.exec()
+
+    def min_max_percentage_chosen(self, column: str, percentage: int, min_max: str):
+        print(
+            f'Toolbar:: Color column: {column} percentage {percentage} % for values: {min_max}')
+        self.min_max_colors.emit(column, percentage, min_max)
