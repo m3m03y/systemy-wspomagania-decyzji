@@ -27,6 +27,7 @@ class MainWindow(QMainWindow):
         self.toolbar.column_to_standarize.connect(self.standarize_column)
         self.toolbar.column_to_change_range.connect(self.change_range_column)
         self.toolbar.colums_to_display_2Dplot.connect(self.plot2D)
+        self.toolbar.min_max_colors.connect(self.min_max_color_change)
 
         # create table
         self.table = QTableView()
@@ -143,10 +144,18 @@ class MainWindow(QMainWindow):
 
         print(f'x range: {x_range}; y_range: {y_range}; class: {class_column}')
         if not check_if_only_numeric(class_column):
-            class_column_numerized = convert_text_to_numeric_by_alphabet_order(class_column)
+            class_column_numerized = convert_text_to_numeric_by_alphabet_order(
+                class_column)
         else:
             class_column_numerized = class_column
         print(f'Class to numbers: {class_column_numerized}')
         dlg = DisplayPlot(x_range, y_range, x_column_name,
                           y_column_name, class_column, class_column_numerized)
         dlg.exec()
+
+    def min_max_color_change(self, column: str, percentage: int, min_max: str):
+        print(
+            f'MainWindow:: Color column: {column} percentage {percentage} % for values: {min_max}')
+        print(f'Headers: {self.toolbar.headers}')
+        self.model.change_color(percentage, self.toolbar.headers, min_max,
+                                column)
