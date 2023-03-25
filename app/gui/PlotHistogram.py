@@ -53,10 +53,13 @@ class DisplayHistogram(QDialog):
         self.class_name = classes
         self.data = data
         self.data_to_draw = self.data
+
         self.setWindowTitle('Histogram')
         self.figure = Figure(figsize=(5, 4), dpi=100)
         self.canvas = FigureCanvas(self.figure)
         toolbar = NavigationToolbar(self.canvas, self)
+        
+        plt.ion()
         layout = QVBoxLayout()
         discretize_checkbox_layout = QHBoxLayout()
         discretize_input_layout = QHBoxLayout()
@@ -73,7 +76,7 @@ class DisplayHistogram(QDialog):
         self.discretize_input.setLayout(discretize_input_layout)
         self.discretize_input.setDisabled(True)
         self.division_number = QSpinBox()
-        self.division_number.setMinimum(1)
+        self.division_number.setMinimum(2)
         self.division_number.valueChanged.connect(self.plot_discretize)
 
         discretize_checkbox_layout.addWidget(self.enable_discretize)
@@ -95,6 +98,7 @@ class DisplayHistogram(QDialog):
             self.discretize_input.setDisabled(True)
             self.division_number.setDisabled(True)
             self.data_to_draw = self.data
+            self.plot()
             self.update()
         else:
             self.discretize_input.setEnabled(True)
@@ -116,12 +120,14 @@ class DisplayHistogram(QDialog):
         self.plot()
 
     def plot(self):
+        self.figure.clear(True)
         print(f'DisplayHistogram:: dataset to draw: {self.data_to_draw}')
         ax = self.figure.add_subplot(111)
 
         sns.set(style="darkgrid")
 
         sns.histplot(data=self.data_to_draw, x=self.x_axis, hue=self.class_name, kde=True, ax=ax)
-
-        self.update()
+        
+        self.figure.canvas.draw()
+        self.canvas.flush_events()
 

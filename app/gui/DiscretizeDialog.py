@@ -19,7 +19,7 @@ class DiscretizeDialog(QDialog):
         self.columns.addItem(None)
         self.columns.addItems(self.headers)
         self.division_number = QSpinBox()
-        self.division_number.setMinimum(1)
+        self.division_number.setMinimum(2)
         # TODO: set maximum based on numbers in column range
         self.layout.addWidget(QLabel("Choose column"))
         self.layout.addWidget(self.columns)
