@@ -18,7 +18,7 @@ class Toolbar(QToolBar):
     column_to_discretize = Signal(str, int)
     column_to_standarize = Signal(str)
     column_to_change_range = Signal(str, int, int)
-    colums_to_display_2Dplot = Signal(str, str, str)
+    columns_to_display_2Dplot = Signal(str, str, str)
     min_max_colors = Signal(str, int, str)
     columns_to_display_3Dplot = Signal(str, str, str, str)
     columns_to_display_histogram = Signal(str, str)

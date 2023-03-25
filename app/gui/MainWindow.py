@@ -28,7 +28,7 @@ class MainWindow(QMainWindow):
         self.toolbar.column_to_discretize.connect(self.discretize_column)
         self.toolbar.column_to_standarize.connect(self.standarize_column)
         self.toolbar.column_to_change_range.connect(self.change_range_column)
-        self.toolbar.colums_to_display_2Dplot.connect(self.plot2D)
+        self.toolbar.columns_to_display_2Dplot.connect(self.plot2D)
         self.toolbar.min_max_colors.connect(self.min_max_color_change)
         self.toolbar.columns_to_display_2Dplot.connect(self.plot2D)
         self.toolbar.columns_to_display_3Dplot.connect(self.plot3D)
